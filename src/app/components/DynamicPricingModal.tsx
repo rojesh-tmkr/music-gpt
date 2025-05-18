@@ -1,135 +1,42 @@
-import React, { useState } from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import CommercialUse from './CommercialUse';
 import UnlockAllFeatures from './UnlockAllFeatures';
 import CoreFeatures from './CoreFeatures';
-interface PlanData {
-  featureDescriptions: Record<string, { title: string; description: string }>;
-  features: string[];
-  monthlyPrice: string;
-  yearlyPrice: string;
-  buttonText: string;
-  selectedTab: 'Plus' | 'Pro' | 'Ultra';
-}
-
-const plans: Record<'Plus' | 'Pro' | 'Ultra', PlanData> = {
-  Plus: {
-    featureDescriptions: {
-      'Generate 1200 songs /year': {
-        title: 'Get 5K credits /month',
-        description: 'That equals to 100 full songs or instrumentals, and 40 sound effects generations.',
-      },
-      'Unlimited downloads': {
-        title: '∞ Unlimited downloads',
-        description: 'Download your own creations, and anything from our library in best quality at no cost.',
-      },
-      'Standard tool': {
-        title: 'Core features',
-        description: 'Access the basic toolset for music generation and editing.',
-      },
-      'Fast generation': {
-        title: '⚡Fastlane queue',
-        description: 'Get prioritized in the queue and enjoy lower waiting times.',
-      },
-      'Commercial use': {
-        title: 'Commercial use',
-        description: 'Use your creations in monetized projects or for business purposes.',
-      },
-    },
-    features: [
-      'Generate 1200 songs /year',
-      'Unlimited downloads',
-      'Standard tool',
-      'Fast generation',
-      'Commercial use'
-    ],
-    monthlyPrice: '$9.99',
-    yearlyPrice: '$11.99',
-    buttonText: 'Unlock Plus features →',
-    selectedTab: 'Plus',
-  },
-  Pro: {
-    featureDescriptions: {
-      'Generate 6000 songs /year': {
-        title: 'Get 25K credits /month',
-        description: 'That equals to 500 full songs or instrumentals, and 200 sound effects generations.',
-      },
-      'Unlimited downloads': {
-        title: '∞ Unlimited downloads',
-        description: 'Download your own creations, and anything from our library in best quality at no cost.',
-      },
-      'Unlock all features': {
-        title: 'Unlock all features',
-        description: 'Gain access to all creative tools and advanced controls.',
-      },
-      'Fast generation': {
-        title: '⚡Fast Generation',
-        description: 'Skip the queue and get exclusive access our premium server infrastructure for faster generations.',
-      },
-      'Commercial use': {
-        title: 'Commercial use',
-        description: 'Use your creations in monetized projects or for business purposes.',
-      },
-    },
-    features: [
-      'Generate 6000 songs /year',
-      'Unlimited downloads',
-      'Unlock all features',
-      'Fast generation',
-      'Commercial use'
-    ],
-    monthlyPrice: '$16.99',
-    yearlyPrice: '$21.99',
-    buttonText: 'Unlock Pro features →',
-    selectedTab: 'Pro',
-  },
-  Ultra: {
-    featureDescriptions: {
-      'Unlimited generations': {
-        title: 'Unlimited credits',
-        description: 'That equals to unlimited full songs or instrumentals, and unlimited sound effects generations.',
-      },
-      'Unlimited downloads': {
-        title: '∞ Unlimited downloads',
-        description: 'Download your own creations, and anything from our library in best quality at no cost.',
-      },
-      'Unlock all features': {
-        title: 'Unlock all features',
-        description: 'Gain access to all creative tools and advanced controls.',
-      },
-      'Fast generation': {
-        title: '⚡Fast Generation',
-        description: 'Skip the queue and get exclusive access our premium server infrastructure for faster generations.',
-      },
-      'Commercial use': {
-        title: 'Commercial use',
-        description: 'Use your creations in monetized projects or for business purposes.',
-      },
-    },
-    features: [
-      'Unlimited generations',
-      'Unlimited downloads',
-      'Unlock all features',
-      'Fast generation',
-      'Commercial use'
-    ],
-    monthlyPrice: '$32.99',
-    yearlyPrice: '$49.99',
-    buttonText: 'Unlock Ultra features →',
-    selectedTab: 'Ultra',
-  },
-};
+import { PlanData, PlanType } from '../types/plans';
 
 const DynamicPricingModal: React.FC = () => {
-  const [selectedPlan, setSelectedPlan] = useState<'Plus' | 'Pro' | 'Ultra'>('Pro');
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>('Pro');
   const [isYearly, setIsYearly] = useState<boolean>(true);
+  const [plans, setPlans] = useState<Record<PlanType, PlanData> | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<string>('');
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch('/api/plans');
+        const data = await response.json();
+        setPlans(data);
+        setSelectedFeature(data.Pro.features[0]); // Set initial feature
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
+  if (!plans) {
+    return <div className='text-white text-6xl text-center'>Loading...</div>;
+  }
+
   const data = plans[selectedPlan];
-  const [selectedFeature, setSelectedFeature] = useState<string>(data.features[0]);
+  const left = data.featureDescriptions[selectedFeature];
 
   const handleFeatureClick = (feature: string) => {
     setSelectedFeature(feature);
   };
-
-  const left = data.featureDescriptions[selectedFeature];
 
   return (
     <div className="flex flex-col md:flex-row bg-zinc-900 text-white rounded-3xl overflow-hidden w-full h-[600px] shadow-2xl">
@@ -165,7 +72,6 @@ const DynamicPricingModal: React.FC = () => {
         <div className="flex gap-4 mb-6 w-full justify-center">
           {(['Plus', 'Pro', 'Ultra'] as const).map((plan) => (
             <div key={plan} className="relative w-full flex justify-center">
-              {/* Popular badge ABOVE the button, only for Pro */}
               {plan === 'Pro' && (
                 <div className="absolute -top-3 bg-white text-black text-xs px-3 py-1 rounded-full shadow">
                   Popular
@@ -186,7 +92,6 @@ const DynamicPricingModal: React.FC = () => {
               </button>
             </div>
           ))}
-
         </div>
 
         <ul className="space-y-3 text-sm text-gray-300 mb-8">
@@ -210,7 +115,10 @@ const DynamicPricingModal: React.FC = () => {
           </div>
         </div>
 
-        <button className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition">
+        <button 
+          onClick={() => window.location.href = 'https://musicgpt.com'}
+          className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition cursor-pointer"
+        >
           {data.buttonText}
         </button>
       </div>

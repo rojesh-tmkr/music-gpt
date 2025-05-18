@@ -7,7 +7,7 @@ interface TopNavBarProps {
 const TopNavBar: React.FC<TopNavBarProps> = ({ onUpgradeClick }) => {
   return (
     <header className="flex justify-between items-center px-6 py-4 bg-transparent text-white w-full">
-      {/* Left: Logo + Beta */}
+
       <div className="flex items-center space-x-2">
         <img src="/logo.svg" alt="MusicGPT Logo" className="w-6 h-6" />
         <span className="text-lg font-semibold">MusicGPT</span>

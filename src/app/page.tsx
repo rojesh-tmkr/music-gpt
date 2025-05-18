@@ -20,7 +20,7 @@ const Home: React.FC = () => {
       {/* Top Navigation */}
       <TopNavBar onUpgradeClick={() => setShowPopup(true)} />
 
-      {/* Hero Content */}
+      {/* Content */}
       <div
         className="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center bg-cover bg-center px-4"
         style={{ backgroundImage: "url('/bg.png')" }}
