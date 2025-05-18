@@ -27,8 +27,8 @@ const features = [
 const CoreFeatures: React.FC = () => {
   return (
     <div className="bg-gradient-to-b from-blue-900 to-indigo-900 text-white py-12 px-6 flex flex-col items-center text-center">
-      <div className="flex items-center text-xl font-semibold mb-10 gap-2">
-        <FaLockOpen className="text-white text-2xl" />
+      <div className="flex items-center text-3xl font-semibold mb-10 gap-2">
+        <FaLockOpen className="text-white text-3xl" />
         <span>Core features</span>
       </div>
 

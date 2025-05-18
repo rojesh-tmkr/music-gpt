@@ -27,7 +27,7 @@ const plans: Record<'Plus' | 'Pro' | 'Ultra', PlanData> = {
         description: 'Access the basic toolset for music generation and editing.',
       },
       'Fast generation': {
-        title: 'Fastlane queue',
+        title: '⚡Fastlane queue',
         description: 'Get prioritized in the queue and enjoy lower waiting times.',
       },
       'Commercial use': {
@@ -62,7 +62,7 @@ const plans: Record<'Plus' | 'Pro' | 'Ultra', PlanData> = {
         description: 'Gain access to all creative tools and advanced controls.',
       },
       'Fast generation': {
-        title: 'Fast Generation',
+        title: '⚡Fast Generation',
         description: 'Skip the queue and get exclusive access our premium server infrastructure for faster generations.',
       },
       'Commercial use': {
@@ -97,7 +97,7 @@ const plans: Record<'Plus' | 'Pro' | 'Ultra', PlanData> = {
         description: 'Gain access to all creative tools and advanced controls.',
       },
       'Fast generation': {
-        title: 'Fast Generation',
+        title: '⚡Fast Generation',
         description: 'Skip the queue and get exclusive access our premium server infrastructure for faster generations.',
       },
       'Commercial use': {
@@ -132,9 +132,9 @@ const DynamicPricingModal: React.FC = () => {
   const left = data.featureDescriptions[selectedFeature];
 
   return (
-    <div className="flex flex-col md:flex-row bg-zinc-900 text-white rounded-3xl overflow-hidden max-w-5xl w-full shadow-2xl">
+    <div className="flex flex-col md:flex-row bg-zinc-900 text-white rounded-3xl overflow-hidden w-full h-[600px] shadow-2xl">
       {/* Left */}
-      <div className="bg-gradient-to-b from-blue-900 to-indigo-900 w-full md:w-1/2 flex flex-col justify-center items-center p-8 text-center">
+      <div className="bg-gradient-to-b from-blue-900 to-indigo-900 w-full md:w-1/2 flex flex-col justify-center items-center p-8 text-center gap-[80px]">
         {left?.title === 'Commercial use' ? (
           <CommercialUse />
         ) : left?.title === 'Unlock all features' ? (
@@ -143,13 +143,17 @@ const DynamicPricingModal: React.FC = () => {
           <CoreFeatures />
         ) : (
           <>
-            <h2 className="text-xl font-semibold mb-2">{left?.title}</h2>
-            <p className="text-sm text-gray-300 mb-6 max-w-xs">{left?.description}</p>
-            <input
-              type="text"
-              placeholder="Create anything"
-              className="bg-black/50 text-white px-6 py-3 rounded-full w-full max-w-sm"
-            />
+            <div className="flex flex-col gap-1">
+              <h2 className="text-3xl font-semibold mb-2">{left?.title}</h2>
+              <p className="text-md text-gray-300 mb-6 max-w-xs tracking-wide">{left?.description}</p>
+            </div>
+            {left?.title === 'Get 25K credits /month' || left?.title === 'Get 5K credits /month' || left?.title === 'Unlimited credits' ? (
+              <input
+                type="text"
+                placeholder="Create anything"
+                className="bg-black/50 text-white px-6 py-3 rounded-3xl w-[500px] h-[80px] ml-[150px] border-2"
+              />
+            ) : null}
           </>
         )}
       </div>
@@ -158,22 +162,31 @@ const DynamicPricingModal: React.FC = () => {
       <div className="w-full md:w-1/2 p-8 bg-zinc-900 flex flex-col justify-between">
         <h2 className="text-2xl font-semibold mb-6">Unlock the future of music.</h2>
 
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-4 mb-6 w-full justify-center">
           {(['Plus', 'Pro', 'Ultra'] as const).map((plan) => (
-            <button
-              key={plan}
-              onClick={() => {
-                setSelectedPlan(plan);
-                setSelectedFeature(plans[plan].features[0]);
-              }}
-              className={`px-4 py-2 border rounded-lg ${selectedPlan === plan ? 'bg-white text-black border-white' : 'border-white text-white'}`}
-            >
-              {plan}
-              {selectedPlan === plan && plan === 'Pro' && (
-                <span className="text-xs bg-white text-black px-2 py-0.5 rounded-full ml-2">Popular</span>
+            <div key={plan} className="relative w-full flex justify-center">
+              {/* Popular badge ABOVE the button, only for Pro */}
+              {plan === 'Pro' && (
+                <div className="absolute -top-3 bg-white text-black text-xs px-3 py-1 rounded-full shadow">
+                  Popular
+                </div>
               )}
-            </button>
+
+              <button
+                onClick={() => {
+                  setSelectedPlan(plan);
+                  setSelectedFeature(plans[plan].features[0]);
+                }}
+                className={`w-30 h-15 px-4 py-2 border rounded-2xl text-white transition ${selectedPlan === plan
+                    ? 'bg-gray-600 border-white border-4'
+                    : 'border border-gray-400'
+                  }`}
+              >
+                {plan}
+              </button>
+            </div>
           ))}
+
         </div>
 
         <ul className="space-y-3 text-sm text-gray-300 mb-8">
@@ -183,7 +196,7 @@ const DynamicPricingModal: React.FC = () => {
               onMouseOver={() => handleFeatureClick(feature)}
               className={`flex items-center gap-2 cursor-pointer ${feature === selectedFeature ? 'text-white font-semibold' : ''}`}
             >
-              {index === 0 ? '✔' : '•'} {feature}
+              ✔ {feature}
             </li>
           ))}
         </ul>

@@ -37,7 +37,7 @@ const Home: React.FC = () => {
           onClick={() => setShowPopup(false)} // Close when clicking the backdrop
         >
           <div
-            className="relative w-full max-w-5xl"
+            className="relative w-full max-w-4xl"
             onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside modal
           >
             <DynamicPricingModal />
